@@ -37,6 +37,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/admin/**").permitAll()
                         .requestMatchers("/api/customer/**").permitAll()
                         .requestMatchers("/api/books/**").permitAll()
+                        .requestMatchers("/api/transactions/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
