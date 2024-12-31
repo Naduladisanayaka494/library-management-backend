@@ -40,12 +40,12 @@ public class AuthController {
     private  final UserRepository userRepository;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signupCustomer(@RequestBody SignUpRequest signupRequest) {
+    public ResponseEntity<?> signupEmployee(@RequestBody SignUpRequest signupRequest) {
         if(authService.hasAdminwithemail(signupRequest.getEmail()))
             return new ResponseEntity<>("email already exists",HttpStatus.NOT_ACCEPTABLE);
         UserDto createduserdto  =authService.createdAdmin(signupRequest);
         if(createduserdto==null) return new ResponseEntity<>(
-                "customer not created", HttpStatus.BAD_REQUEST
+                "Employee not created", HttpStatus.BAD_REQUEST
         );
         return new ResponseEntity<>(createduserdto,HttpStatus.CREATED);
 
@@ -70,6 +70,7 @@ public class AuthController {
             authenticationResponse.setUserRole(optionalUser.get().getUserRole());
         }
         return authenticationResponse;
+
 
     }
 }
