@@ -1,6 +1,8 @@
 package com.librarymanegement.librarymanegement.entity;
 
 
+
+
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -21,10 +23,13 @@ public class Book {
     @Column(nullable = false)
     private int quantity;
 
+    @Column(name = "book_image", nullable = true)
+    private String bookImage;
+
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
 
-    // Getters and setters
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -55,6 +60,14 @@ public class Book {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getBookImage() {
+        return bookImage;
+    }
+
+    public void setBookImage(String bookImage) {
+        this.bookImage = bookImage;
     }
 
     public List<Transaction> getTransactions() {
