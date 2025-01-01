@@ -83,7 +83,7 @@ public class User  implements UserDetails {
         return true;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(String name) {
         this.name = name;
     }
 
