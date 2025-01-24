@@ -37,40 +37,41 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserServiceimpl userService;
     private final JWTUtill jwtUtill;
-    private  final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signupEmployee(@RequestBody SignUpRequest signupRequest) {
-        if(authService.hasAdminwithemail(signupRequest.getEmail()))
-            return new ResponseEntity<>("email already exists",HttpStatus.NOT_ACCEPTABLE);
-        UserDto createduserdto  =authService.createdAdmin(signupRequest);
-        if(createduserdto==null) return new ResponseEntity<>(
+        if (authService.hasAdminwithemail(signupRequest.getEmail()))
+            return new ResponseEntity<>("email already exists", HttpStatus.NOT_ACCEPTABLE);
+        UserDto createduserdto = authService.createdAdmin(signupRequest);
+        if (createduserdto == null) return new ResponseEntity<>(
                 "Employee not created", HttpStatus.BAD_REQUEST
         );
-        return new ResponseEntity<>(createduserdto,HttpStatus.CREATED);
+        System.out.print(createduserdto);
+        return new ResponseEntity<>(createduserdto, HttpStatus.CREATED);
 
     }
 
     @PostMapping("/login")
     public AuthenticationResponse createauthenticationtoken(@RequestBody AuthenticationRequest authenticationRequest) throws BadCredentialsException, DisabledException, UsernameNotFoundException, BadRequestException {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),authenticationRequest.getPassword()));
-        }catch(BadCredentialsException e){
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+        } catch (BadCredentialsException e) {
             throw new BadRequestException("incorrect username or passoword");
         }
-        final UserDetails userDetails= userService.userDetailService().loadUserByUsername(authenticationRequest.getEmail());
-        System.out.print(userDetails.getUsername());
+        UserDetails userDetails = userService.userDetailService().loadUserByUsername(authenticationRequest.getEmail());
+
         Optional<User> optionalUser = userRepository.findByEmail(userDetails.getUsername());
+        System.out.print(optionalUser);
         final String jwt = jwtUtill.generateToken(userDetails);
         System.out.print(jwt);
-        AuthenticationResponse  authenticationResponse= new AuthenticationResponse();
-        if(optionalUser.isPresent()){
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+        if (optionalUser.isPresent()) {
             authenticationResponse.setJwt(jwt);
             authenticationResponse.setUserId(optionalUser.get().getId());
             authenticationResponse.setUserRole(optionalUser.get().getUserRole());
         }
         return authenticationResponse;
-
 
     }
 }

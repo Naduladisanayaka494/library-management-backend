@@ -4,6 +4,7 @@ package com.librarymanegement.librarymanegement.entity;
 
 import com.librarymanegement.librarymanegement.enums.UserRole;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,27 +14,46 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
+@Data
 public class User  implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = true)
     private String name;
-
-    @Column(nullable = false)
+    private String email;
     private String password;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Transaction> transactions;
 
-    public UserRole getUserRole() {
-        return userRole;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -44,23 +64,33 @@ public class User  implements UserDetails {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Transaction> transactions;
-
-    // Getters and setters
-    public Long getId() {
-        return id;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList();  // Adjust this based on your roles/authorities implementation
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override
@@ -81,33 +111,6 @@ public class User  implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public void setUsername(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
-
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
     }
 }
 
